@@ -20,7 +20,7 @@ class ruby($version = '1.9.2-p318') {
       cwd     => "/usr/local/src/ruby-${version}",
       require => [Exec["untar-ruby-source"], Class['ruby::dependencies']],
       creates => "/usr/local/src/ruby-${version}/config.h",
-      before  => Exec["make install"]
+      before  => Exec["make install"],
     }
 
     exec { "make && make install":
