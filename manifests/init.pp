@@ -3,15 +3,15 @@ class ruby($version = '1.9.2-p318') {
    file { "/usr/local/src": ensure => directory }
 
     exec { "wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-${version}.tar.gz":
-      alias => "download-ruby-source"
+      alias => "download-ruby-source",
       cwd       => "/usr/local/src",
       creates   => "/usr/local/src/ruby-${version}.tar.gz",
-      before => Exec["untar-openntpd-source"],
+      before => Exec["untar-ruby-source"],
     }
 
     exec { "tar xzf ruby-${version}.tar.gz":
       cwd       => "/usr/local/src",
-      creates   => "/usr/local/src/openntpd-${version}",
+      creates   => "/usr/local/src/tar-${version}",
       alias     => "untar-ruby-source",
       subscribe => File["ruby-source-tgz"]
     }
@@ -26,7 +26,7 @@ class ruby($version = '1.9.2-p318') {
     exec { "make && make install":
       cwd     => "/usr/local/src/ruby-${version}",
       alias   => "make install",
-      creates => [ "/usr/local/src/ruby-${version}/ntpd",
+      creates => [ "/usr/local/src/ruby-${version}/ruby",
                    "/usr/local/bin/ruby" ],
       require => Exec["./configure"],
     }
