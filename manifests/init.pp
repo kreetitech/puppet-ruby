@@ -20,15 +20,13 @@ class ruby($version = '1.9.2-p318') {
       subscribe => Exec["ruby-source-tgz"],
     }
 
-    Exec['untar-ruby-source'] -> Notify['configure-ruby']
-
     exec { "bash configure":
       cwd     => "/usr/local/src/ruby-${version}",
       require => [Exec["untar-ruby-source"], Class['ruby::dependencies']],
       alias   => 'configure-ruby',
       refreshonly => true,
       creates => "/usr/local/src/ruby-${version}/config.h",
-      before  => Exec["make install"],
+      before  => Exec["make-install"],
     }
 
     exec { "make && make install":
@@ -41,14 +39,14 @@ class ruby($version = '1.9.2-p318') {
     exec { "gem update --system":
       cwd     => "/usr/local/src/ruby-${version}",
       alias   => "gem-update",
-      created => "/usr/local/bin/gem",
+      creates => "/usr/local/bin/gem",
       require => Exec["make-install"],
     }
 
     exec { "gem install bundler":
       cwd     => "/usr/local/src/ruby-${version}",
       alias   => "gem-install-bundler",
-      created => "/usr/local/bin/bundle",
+      creates => "/usr/local/bin/bundle",
       require => Exec["gem-update"],
     }
 }
