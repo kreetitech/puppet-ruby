@@ -18,6 +18,7 @@ class ruby($version = '1.9.2-p318') {
       creates   => "/usr/local/src/tar-${version}",
       alias     => "untar-ruby-source",
       subscribe => Exec["ruby-source-tgz"],
+      notify    => Exec["configure-ruby"],
     }
 
     exec { "bash configure":
@@ -27,6 +28,7 @@ class ruby($version = '1.9.2-p318') {
       refreshonly => true,
       creates => "/usr/local/src/ruby-${version}/config.h",
       before  => Exec["make-install"],
+      notify    => Exec["make-install"],
     }
 
     exec { "make && make install":
@@ -34,19 +36,21 @@ class ruby($version = '1.9.2-p318') {
       alias   => "make-install",
       creates => "/usr/local/bin/ruby",
       require => Exec["configure-ruby"],
+      notify    => Exec["gem-update"],
     }
 
     exec { "gem update --system":
       cwd     => "/usr/local/src/ruby-${version}",
       alias   => "gem-update",
-      creates => "/usr/local/bin/gem",
+      refreshonly => true,
       require => Exec["make-install"],
+      notify    => Exec["gem-install-bundler"],
     }
 
     exec { "gem install bundler":
       cwd     => "/usr/local/src/ruby-${version}",
       alias   => "gem-install-bundler",
       creates => "/usr/local/bin/bundle",
-      require => Exec["gem-update"],
+      require => Exec["make-install"],
     }
 }
