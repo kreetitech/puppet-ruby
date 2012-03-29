@@ -15,7 +15,7 @@ class ruby($version = '1.9.2-p318') {
 
     exec { "tar xzf ruby-${version}.tar.gz":
       cwd       => "/usr/local/src",
-      creates   => "/usr/local/src/tar-${version}",
+      creates   => "/usr/local/src/ruby-${version}",
       alias     => "untar-ruby-source",
       subscribe => Exec["ruby-source-tgz"],
       notify    => Exec["configure-ruby"],
