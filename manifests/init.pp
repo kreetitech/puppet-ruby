@@ -3,7 +3,8 @@ class ruby($version = '1.9.2-p318') {
      logoutput => true,}
 
    class {'ruby::dependencies':}
-   file { "/usr/local/src": ensure => directory }
+   file { "/usr/local/src":
+     ensure => directory }
 
     exec { "wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-${version}.tar.gz":
       alias => "ruby-source-tgz",
@@ -19,7 +20,7 @@ class ruby($version = '1.9.2-p318') {
       subscribe => Exec["ruby-source-tgz"],
     }
 
-    Exec['untar-ruby-source] => Notify['configure-ruby']
+    Exec['untar-ruby-source'] -> Notify['configure-ruby']
 
     exec { "bash configure":
       cwd     => "/usr/local/src/ruby-${version}",
