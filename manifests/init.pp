@@ -19,7 +19,7 @@ class ruby($version = '1.9.2-p318') {
       subscribe => Exec["ruby-source-tgz"],
     }
 
-    Exec['untar-ruby-source] => Notify['configure-ruby'],
+    Exec['untar-ruby-source] => Notify['configure-ruby']
 
     exec { "bash configure":
       cwd     => "/usr/local/src/ruby-${version}",
